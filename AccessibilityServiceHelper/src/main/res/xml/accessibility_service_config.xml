@@ -1,0 +1,38 @@
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/accessibility_service_description"
+    android:accessibilityEventTypes="typeAllMask"
+    android:accessibilityFlags="flagDefault|flagIncludeNotImportantViews|flagRequestEnhancedWebAccessibility|flagReportViewIds|flagRetrieveInteractiveWindows"
+    android:accessibilityFeedbackType="feedbackAllMask"
+    android:notificationTimeout="100"
+    android:canRetrieveWindowContent="true"
+    android:settingsActivity="com.example.android.accessibility.ServiceSettingsActivity" />
+
+<!-- android:accessibilityFlags 额外声明 https://www.cnblogs.com/guanxinjing/p/17031369.html
+    flagDefault 默认
+
+　　flagIncludeNotImportantViews
+
+　　flagRequestTouchExplorationMode  允许获得触控信息，另外你还需要将android:canRequestTouchExplorationMode  属性设置为true。 请注意！此属性有一定的危险，添加此属性后有可能导致触控失效(触发条件可能是需要插入鼠标或者其他外置设备)
+
+　　flagRequestEnhancedWebAccessibility  允许获取Web地址信息，另外你还需要将 android:canRequestEnhancedWebAccessibility   属性设置为true
+
+　　flagReportViewIds 允许获得view id,需要获取viewid的时候需要该参数,开始没声明导致nodeInfo. getViewIdResourceName()返回的为null
+
+　　flagRequestFilterKeyEvents  此事件添加后才能在服务的onKeyEvent方法里输出当前按键键值，另外你还需要将 android:canRequestFilterKeyEvents 属性设置为true
+
+　　flagRetrieveInteractiveWindows 允许获得windows,使用getWindows时需要该参数,否则会返回空列表
+
+    android:canRetrieveWindowContent 设置为“true”表示允许获取屏幕信息,使用getWindows、getRootInActiveWindow等函数时需要为“true”
+
+    android:canRequestTouchExplorationMode  设置为“true”表示允许获取触摸信息
+
+    android:canRequestEnhancedWebAccessibility  设置为“true”表示允许获取Web地址访问信息
+
+    android:canRequestFilterKeyEvents  设置为“true”表示允许获取按键信息
+
+    android:canRequestFingerprintGestures  设置为“true”表示允许获取手势信息
+
+    android:canControlMagnification 设置为“true”表示允许获取缩放信息
+
+    android:notificationTimeout  同一种事件类型触发的最短时间间隔(毫秒)
+-->
