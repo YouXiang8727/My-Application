@@ -76,4 +76,10 @@ dependencies {
 
     implementation "androidx.camera:camera-view:${camerax_version}"
     implementation "androidx.camera:camera-extensions:${camerax_version}"
+
+    def mlkit_version = "16.0.0"
+    // To recognize Latin script
+    implementation "com.google.mlkit:text-recognition:$mlkit_version"
+    // To recognize Chinese script
+    implementation "com.google.mlkit:text-recognition-chinese:$mlkit_version"
 }
