@@ -1,7 +1,9 @@
 package com.youxiang8727.myapplication.ui.camerax
 
+import android.util.Log
 import android.util.Size
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
@@ -12,6 +14,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +23,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
+import com.elvishew.xlog.XLog
+import com.youxiang8727.myapplication.mlkit.TextAnalyzer
 
 @Composable
 fun ComposeCamera(
@@ -67,6 +73,15 @@ private fun ComposeCameraView() {
             )
         }
 
+    val imageAnalyzer = ImageAnalysis.Builder()
+        .setResolutionSelector(resolutionSelector)
+        .build()
+        .apply {
+            this.setAnalyzer(executor, TextAnalyzer { result ->
+                XLog.d("analysis result: $result")
+            })
+        }
+
     AndroidView(
         factory = { ctx ->
             cameraProviderFuture.addListener({
@@ -74,7 +89,8 @@ private fun ComposeCameraView() {
                 cameraProvider.bindToLifecycle(
                     lifecycleOwner,
                     cameraSelector,
-                    preview
+                    preview,
+                    imageAnalyzer
                 )
             }, executor)
             previewView
