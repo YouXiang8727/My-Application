@@ -10,20 +10,32 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import com.elvishew.xlog.XLog
+import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.Text.TextBlock
 import com.youxiang8727.myapplication.mlkit.TextAnalyzer
 
 @Composable
@@ -38,6 +50,7 @@ fun ComposeCamera(
     ComposeCameraView()
 }
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
 private fun ComposeCameraView() {
     val context = LocalContext.current
@@ -46,7 +59,9 @@ private fun ComposeCameraView() {
     val executor = ContextCompat.getMainExecutor(context)
 
     val previewView = remember {
-        PreviewView(context)
+        PreviewView(context).apply {
+            this.scaleType = PreviewView.ScaleType.FIT_CENTER
+        }
     }
 
     val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
@@ -73,12 +88,17 @@ private fun ComposeCameraView() {
             )
         }
 
+    val analyseTextBlocks = remember {
+        mutableStateListOf<Text.Line>()
+    }
+
     val imageAnalyzer = ImageAnalysis.Builder()
         .setResolutionSelector(resolutionSelector)
         .build()
         .apply {
             this.setAnalyzer(executor, TextAnalyzer { result ->
-                XLog.d("analysis result: $result")
+                analyseTextBlocks.clear()
+                analyseTextBlocks.addAll(result)
             })
         }
 

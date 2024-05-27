@@ -6,6 +6,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.elvishew.xlog.XLog
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.CoroutineScope
@@ -16,7 +17,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class TextAnalyzer(
-    private val onDetectTextUpdated: (String) -> Unit
+    private val onDetectTextUpdated: (List<Text.Line>) -> Unit
 ): ImageAnalysis.Analyzer {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -33,8 +34,16 @@ class TextAnalyzer(
             suspendCoroutine { continuation ->
                 textRecognizer.process(inputImage)
                     .addOnSuccessListener { task ->
-                        val detectedText = task.text
-                        onDetectTextUpdated(detectedText)
+                        task.textBlocks.forEachIndexed { blockIndex, textBlock ->
+                            textBlock.lines.forEachIndexed { lineIndex, line ->
+                                XLog.i("block[$blockIndex]" +
+                                        "line[$lineIndex]" +
+                                        "text[${line.text}]" +
+                                        "confidence[${line.confidence}]" +
+                                        "cornerPoints[${line.cornerPoints?.get(0)?.x},${line.cornerPoints?.get(0)?.y}]")
+                            }
+                        }
+                        onDetectTextUpdated(task.textBlocks.flatMap { it.lines })
                     }
                     .addOnCanceledListener {
                         XLog.e("recognize text canceled")
