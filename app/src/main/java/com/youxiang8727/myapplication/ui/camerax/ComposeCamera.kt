@@ -3,6 +3,7 @@ package com.youxiang8727.myapplication.ui.camerax
 import android.util.Log
 import android.util.Size
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.core.resolutionselector.AspectRatioStrategy
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
@@ -50,7 +52,7 @@ fun ComposeCamera(
     ComposeCameraView()
 }
 
-@OptIn(ExperimentalTextApi::class)
+@androidx.annotation.OptIn(ExperimentalGetImage::class)
 @Composable
 private fun ComposeCameraView() {
     val context = LocalContext.current
@@ -88,17 +90,15 @@ private fun ComposeCameraView() {
             )
         }
 
-    val analyseTextBlocks = remember {
-        mutableStateListOf<Text.Line>()
-    }
-
     val imageAnalyzer = ImageAnalysis.Builder()
         .setResolutionSelector(resolutionSelector)
         .build()
         .apply {
             this.setAnalyzer(executor, TextAnalyzer { result ->
-                analyseTextBlocks.clear()
-                analyseTextBlocks.addAll(result)
+                previewView.overlay.clear()
+                previewView.overlay.add(
+                    TextRecognizerDrawable(result)
+                )
             })
         }
 

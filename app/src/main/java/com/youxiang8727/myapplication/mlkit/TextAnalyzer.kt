@@ -34,15 +34,6 @@ class TextAnalyzer(
             suspendCoroutine { continuation ->
                 textRecognizer.process(inputImage)
                     .addOnSuccessListener { task ->
-                        task.textBlocks.forEachIndexed { blockIndex, textBlock ->
-                            textBlock.lines.forEachIndexed { lineIndex, line ->
-                                XLog.i("block[$blockIndex]" +
-                                        "line[$lineIndex]" +
-                                        "text[${line.text}]" +
-                                        "confidence[${line.confidence}]" +
-                                        "cornerPoints[${line.cornerPoints?.get(0)?.x},${line.cornerPoints?.get(0)?.y}]")
-                            }
-                        }
                         onDetectTextUpdated(task.textBlocks.flatMap { it.lines })
                     }
                     .addOnCanceledListener {
