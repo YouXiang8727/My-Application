@@ -17,7 +17,11 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class TextAnalyzer(
-    private val onDetectTextUpdated: (List<Text.Line>) -> Unit
+    private val onDetectTextUpdated: (
+        List<Text.Line>,
+        imageWidth: Int,
+        imageHeight: Int,
+        rotationDegrees: Int) -> Unit
 ): ImageAnalysis.Analyzer {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -34,7 +38,12 @@ class TextAnalyzer(
             suspendCoroutine { continuation ->
                 textRecognizer.process(inputImage)
                     .addOnSuccessListener { task ->
-                        onDetectTextUpdated(task.textBlocks.flatMap { it.lines })
+                        onDetectTextUpdated(
+                            task.textBlocks.flatMap { it.lines },
+                            inputImage.width,
+                            inputImage.height,
+                            imageProxy.imageInfo.rotationDegrees
+                        )
                     }
                     .addOnCanceledListener {
                         XLog.e("recognize text canceled")

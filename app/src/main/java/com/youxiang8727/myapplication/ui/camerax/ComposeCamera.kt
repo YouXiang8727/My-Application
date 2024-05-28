@@ -94,10 +94,15 @@ private fun ComposeCameraView() {
         .setResolutionSelector(resolutionSelector)
         .build()
         .apply {
-            this.setAnalyzer(executor, TextAnalyzer { result ->
+            this.setAnalyzer(executor, TextAnalyzer { result, width, height, rotationDegrees ->
                 previewView.overlay.clear()
                 previewView.overlay.add(
-                    TextRecognizerDrawable(result)
+                    TextRecognizerDrawable(
+                        result,
+                        width,
+                        height,
+                        rotationDegrees
+                    )
                 )
             })
         }
