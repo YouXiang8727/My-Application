@@ -5,13 +5,16 @@ import com.youxiang8727.myapplication.Reducer
 import com.youxiang8727.myapplication.State
 
 data class ComposeCameraState(
-    val isPermissionGranted: Boolean = false
+    val isPermissionGranted: Boolean = false,
+    val analysisResultDrawableType: AnalysisResultDrawableType = AnalysisResultDrawableType.None,
 ): State {
 
 }
 
 sealed interface ComposeCameraAction: Action {
     class SetPermissionGranted(val isGranted: Boolean) : ComposeCameraAction
+
+    class SetAnalysisResultDrawableType(val analysisResultDrawableType: AnalysisResultDrawableType) : ComposeCameraAction
 }
 
 class ComposeCameraActionReducer: Reducer<ComposeCameraState, ComposeCameraAction> {
@@ -21,7 +24,15 @@ class ComposeCameraActionReducer: Reducer<ComposeCameraState, ComposeCameraActio
     ): ComposeCameraState {
         return when (action) {
             is ComposeCameraAction.SetPermissionGranted -> {
-                state.copy(action.isGranted)
+                state.copy(
+                    isPermissionGranted = action.isGranted
+                )
+            }
+
+            is ComposeCameraAction.SetAnalysisResultDrawableType -> {
+                state.copy(
+                    analysisResultDrawableType = action.analysisResultDrawableType
+                )
             }
 
         }

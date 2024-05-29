@@ -5,16 +5,14 @@ import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
+import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.view.Surface
-import androidx.camera.core.impl.ImageOutputConfig.RotationDegreesValue
-import com.elvishew.xlog.XLog
 import com.google.mlkit.vision.text.Text
-import java.lang.IllegalStateException
 
-data class TextRecognizerDrawable(
-    val text: List<Text.Line>,
+data class AnalysisResultDrawable(
+    val text: Text,
+    val analysisResultDrawableType: AnalysisResultDrawableType,
     val imageWidth: Int,
     val imageHeight: Int,
     val rotationDegrees: Int
@@ -41,6 +39,28 @@ data class TextRecognizerDrawable(
     private val contentPadding = 25
 
     override fun draw(canvas: Canvas) {
+        val blocks: List<DrawableData> = when (analysisResultDrawableType) {
+            AnalysisResultDrawableType.None -> return
+            AnalysisResultDrawableType.Block -> {
+                text.textBlocks.map {
+                    DrawableData(
+                        it.text,
+                        it.cornerPoints
+                    )
+                }
+            }
+            AnalysisResultDrawableType.Line -> {
+                text.textBlocks.flatMap {
+                    it.lines
+                }.map {
+                    DrawableData(
+                        it.text,
+                        it.cornerPoints
+                    )
+                }
+            }
+        }
+
         //畫面縮放比例
         val ratio: Double = when (rotationDegrees) {
             0, 180 -> {
@@ -69,7 +89,7 @@ data class TextRecognizerDrawable(
         val scaledImageWidth = (imageWidth * ratio).toInt()
         val scaledImageHeight = (imageHeight * ratio).toInt()
 
-        text.forEach { textBlock ->
+        blocks.forEach { textBlock ->
             val cornerPoints = textBlock.cornerPoints
             if (cornerPoints == null || cornerPoints.size != 4) return@forEach
             // 將座標和尺寸換算回 previewView 的尺寸
@@ -144,4 +164,9 @@ data class TextRecognizerDrawable(
 
     @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+
+    private inner class DrawableData(
+        val text: String,
+        val cornerPoints: Array<Point>?
+    )
 }

@@ -25,4 +25,12 @@ class ComposeCameraViewModel(
         XXPermissions.startPermissionActivity(context, Permission.CAMERA)
     }
 
+    fun setAnalysisResultDrawableType(
+        analysisResultDrawableType: AnalysisResultDrawableType
+    ) {
+        dispatch(
+            ComposeCameraAction.SetAnalysisResultDrawableType(analysisResultDrawableType)
+        )
+    }
+
 }

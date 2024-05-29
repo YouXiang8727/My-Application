@@ -18,7 +18,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class TextAnalyzer(
     private val onDetectTextUpdated: (
-        List<Text.Line>,
+        Text,
         imageWidth: Int,
         imageHeight: Int,
         rotationDegrees: Int) -> Unit
@@ -39,7 +39,7 @@ class TextAnalyzer(
                 textRecognizer.process(inputImage)
                     .addOnSuccessListener { task ->
                         onDetectTextUpdated(
-                            task.textBlocks.flatMap { it.lines },
+                            task,
                             inputImage.width,
                             inputImage.height,
                             imageProxy.imageInfo.rotationDegrees

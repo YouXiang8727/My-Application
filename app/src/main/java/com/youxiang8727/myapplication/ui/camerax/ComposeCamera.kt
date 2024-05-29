@@ -9,12 +9,24 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
@@ -31,12 +43,20 @@ fun ComposeCamera(
         return
     }
 
-    ComposeCameraView()
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        ComposeCameraView(viewModel)
+        AnalysisResultDrawableTypeSelector(viewModel)
+    }
 }
 
 @androidx.annotation.OptIn(ExperimentalGetImage::class)
 @Composable
-private fun ComposeCameraView() {
+private fun ComposeCameraView(
+    viewModel: ComposeCameraViewModel
+) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -79,8 +99,9 @@ private fun ComposeCameraView() {
             this.setAnalyzer(executor, TextAnalyzer { result, width, height, rotationDegrees ->
                 previewView.overlay.clear()
                 previewView.overlay.add(
-                    TextRecognizerDrawable(
+                    AnalysisResultDrawable(
                         result,
+                        viewModel.state.analysisResultDrawableType,
                         width,
                         height,
                         rotationDegrees
@@ -132,4 +153,58 @@ private fun CameraPermissionDialog(
             Text(text = "Please open camera permission")
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AnalysisResultDrawableTypeSelector(
+    viewModel: ComposeCameraViewModel
+) {
+    val items = listOf(
+        AnalysisResultDrawableType.None,
+        AnalysisResultDrawableType.Block,
+        AnalysisResultDrawableType.Line
+    )
+
+    var valueRange by remember {
+        mutableStateOf(0f..1f)
+    }
+
+    Column {
+        if (viewModel.state.analysisResultDrawableType == AnalysisResultDrawableType.Line) {
+            RangeSlider(
+                valueRange = 0f..1f,
+                value = valueRange,
+                onValueChange = { range ->
+                    valueRange = range
+                },
+            )
+        }
+        TabRow(
+            selectedTabIndex = items.indexOf(viewModel.state.analysisResultDrawableType),
+            modifier = Modifier,
+            containerColor = Color.Transparent,
+            contentColor = Color.White,
+            indicator = {}
+        ) {
+            items.forEachIndexed { index, textRecognizerDrawableType ->
+                Tab(
+                    selected = viewModel.state.analysisResultDrawableType == textRecognizerDrawableType,
+                    onClick = {
+                        viewModel.setAnalysisResultDrawableType(textRecognizerDrawableType)
+                    },
+                    text = {
+                        Text(
+                            text = textRecognizerDrawableType::class.java.simpleName,
+                            color = if (viewModel.state.analysisResultDrawableType == textRecognizerDrawableType) {
+                                Color.Green
+                            } else {
+                                Color.White
+                            }
+                        )
+                    }
+                )
+            }
+        }
+    }
 }
