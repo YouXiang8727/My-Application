@@ -1,39 +1,39 @@
 package com.youxiang8727.myapplication.ui.camerax
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.util.Range
+import androidx.compose.ui.graphics.toArgb
 import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.Text.Line
+import com.google.mlkit.vision.text.Text.TextBlock
 
 data class AnalysisResultDrawable(
     val text: Text,
-    val analysisResultDrawableType: AnalysisResultDrawableType,
-    val analysisResultConfidenceRange: Range<Float>,
+    val state: ComposeCameraState,
     val imageWidth: Int,
     val imageHeight: Int,
     val rotationDegrees: Int
 ) : Drawable() {
     private val boundingRectPaint = Paint().apply {
         style = Paint.Style.STROKE
-        color = Color.GREEN
+        color = state.analysisResultDrawableColor.toArgb()
         strokeWidth = 5F
         alpha = 200
     }
 
     private val contentRectPaint = Paint().apply {
         style = Paint.Style.FILL
-        color = Color.GREEN
+        color = state.analysisResultDrawableColor.toArgb()
         alpha = 255
     }
 
     private val contentTextPaint = Paint().apply {
-        color = Color.GREEN
+        color = state.analysisResultDrawableColor.toArgb()
         alpha = 255
         textSize = 36F
     }
@@ -41,27 +41,21 @@ data class AnalysisResultDrawable(
     private val contentPadding = 25
 
     override fun draw(canvas: Canvas) {
-        val blocks: List<DrawableData> = when (analysisResultDrawableType) {
+        val blocks: List<DrawableData> = when (state.analysisResultDrawableType) {
             AnalysisResultDrawableType.None -> return
             AnalysisResultDrawableType.Block -> {
                 text.textBlocks.map {
-                    DrawableData(
-                        it.text,
-                        it.cornerPoints
-                    )
+                    DrawableData(it)
                 }
             }
             AnalysisResultDrawableType.Line -> {
                 text.textBlocks.flatMap {
                     it.lines
                 }.filter {
-                    it.confidence >= analysisResultConfidenceRange.lower &&
-                            it.confidence <= analysisResultConfidenceRange.upper
+                    it.confidence >= state.analysisResultConfidenceRange.lower &&
+                            it.confidence <= state.analysisResultConfidenceRange.upper
                 }.map {
-                    DrawableData(
-                        it.text,
-                        it.cornerPoints
-                    )
+                    DrawableData(it)
                 }
             }
         }
@@ -170,8 +164,18 @@ data class AnalysisResultDrawable(
     @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
-    private inner class DrawableData(
+    private inner class DrawableData private constructor(
         val text: String,
         val cornerPoints: Array<Point>?
-    )
+    ) {
+        constructor(block: TextBlock): this(
+            block.text,
+            block.cornerPoints
+        )
+
+        constructor(line: Line): this(
+            line.text,
+            line.cornerPoints
+        )
+    }
 }

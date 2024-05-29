@@ -2,6 +2,7 @@ package com.youxiang8727.myapplication.ui.camerax
 
 import android.content.Context
 import android.util.Range
+import androidx.annotation.IntRange
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.youxiang8727.myapplication.MviViewModel
@@ -38,6 +39,13 @@ class ComposeCameraViewModel(
         analysisResultConfidenceRange: Range<Float>
     ) {
         dispatch(ComposeCameraAction.SetAnalysisResultConfidenceRange(analysisResultConfidenceRange))
+    }
+
+    fun setAnalysisResultDrawableColorLerp(
+        @IntRange(0, 4095)
+        analysisResultDrawableColorLerp: Int
+    ) {
+        dispatch(ComposeCameraAction.SetAnalysisResultDrawableColorLerp(analysisResultDrawableColorLerp))
     }
 
 }

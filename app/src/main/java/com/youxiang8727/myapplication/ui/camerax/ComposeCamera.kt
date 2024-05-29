@@ -9,13 +9,16 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -102,8 +105,7 @@ private fun ComposeCameraView(
                 previewView.overlay.add(
                     AnalysisResultDrawable(
                         result,
-                        viewModel.state.analysisResultDrawableType,
-                        viewModel.state.analysisResultConfidenceRange,
+                        viewModel.state,
                         width,
                         height,
                         rotationDegrees
@@ -176,7 +178,7 @@ private fun AnalysisResultDrawableTypeSelector(
         if (viewModel.state.analysisResultDrawableType == AnalysisResultDrawableType.Line) {
             Text(
                 text = "Confidence[$valueRange]",
-                color = Color.Green
+                color = viewModel.state.analysisResultDrawableColor
             )
             RangeSlider(
                 valueRange = 0f..1f,
@@ -191,6 +193,17 @@ private fun AnalysisResultDrawableTypeSelector(
                 }
             )
         }
+
+        Slider(
+            value = viewModel.state.analysisResultDrawableColorLerp.toFloat(),
+            onValueChange = {
+                viewModel.setAnalysisResultDrawableColorLerp(it.toInt())
+            },
+            modifier = Modifier.fillMaxWidth(),
+            valueRange = 0f..4095f,
+            steps = 4096
+        )
+
         TabRow(
             selectedTabIndex = items.indexOf(viewModel.state.analysisResultDrawableType),
             modifier = Modifier,
@@ -205,14 +218,20 @@ private fun AnalysisResultDrawableTypeSelector(
                         viewModel.setAnalysisResultDrawableType(textRecognizerDrawableType)
                     },
                     text = {
-                        Text(
-                            text = textRecognizerDrawableType::class.java.simpleName,
-                            color = if (viewModel.state.analysisResultDrawableType == textRecognizerDrawableType) {
-                                Color.Green
-                            } else {
-                                Color.White
-                            }
-                        )
+                        Box(
+                            modifier = Modifier.background(
+                                if (viewModel.state.analysisResultDrawableType == textRecognizerDrawableType) {
+                                    Color.LightGray.copy(alpha = .8f)
+                                } else {
+                                    Color.Transparent
+                                }
+                            )
+                        ) {
+                            Text(
+                                text = textRecognizerDrawableType::class.java.simpleName,
+                                color = Color.White
+                            )
+                        }
                     }
                 )
             }
