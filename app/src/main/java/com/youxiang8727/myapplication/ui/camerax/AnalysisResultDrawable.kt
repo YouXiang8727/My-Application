@@ -8,11 +8,13 @@ import android.graphics.PixelFormat
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.util.Range
 import com.google.mlkit.vision.text.Text
 
 data class AnalysisResultDrawable(
     val text: Text,
     val analysisResultDrawableType: AnalysisResultDrawableType,
+    val analysisResultConfidenceRange: Range<Float>,
     val imageWidth: Int,
     val imageHeight: Int,
     val rotationDegrees: Int
@@ -52,6 +54,9 @@ data class AnalysisResultDrawable(
             AnalysisResultDrawableType.Line -> {
                 text.textBlocks.flatMap {
                     it.lines
+                }.filter {
+                    it.confidence >= analysisResultConfidenceRange.lower &&
+                            it.confidence <= analysisResultConfidenceRange.upper
                 }.map {
                     DrawableData(
                         it.text,

@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
+import androidx.core.util.toRange
 import com.youxiang8727.myapplication.mlkit.TextAnalyzer
 
 @Composable
@@ -102,6 +103,7 @@ private fun ComposeCameraView(
                     AnalysisResultDrawable(
                         result,
                         viewModel.state.analysisResultDrawableType,
+                        viewModel.state.analysisResultConfidenceRange,
                         width,
                         height,
                         rotationDegrees
@@ -172,12 +174,21 @@ private fun AnalysisResultDrawableTypeSelector(
 
     Column {
         if (viewModel.state.analysisResultDrawableType == AnalysisResultDrawableType.Line) {
+            Text(
+                text = "Confidence[$valueRange]",
+                color = Color.Green
+            )
             RangeSlider(
                 valueRange = 0f..1f,
                 value = valueRange,
                 onValueChange = { range ->
                     valueRange = range
                 },
+                onValueChangeFinished = {
+                    viewModel.setAnalysisResultConfidenceRange(
+                        valueRange.toRange()
+                    )
+                }
             )
         }
         TabRow(

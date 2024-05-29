@@ -1,6 +1,7 @@
 package com.youxiang8727.myapplication.ui.camerax
 
 import android.content.Context
+import android.util.Range
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.youxiang8727.myapplication.MviViewModel
@@ -31,6 +32,12 @@ class ComposeCameraViewModel(
         dispatch(
             ComposeCameraAction.SetAnalysisResultDrawableType(analysisResultDrawableType)
         )
+    }
+
+    fun setAnalysisResultConfidenceRange(
+        analysisResultConfidenceRange: Range<Float>
+    ) {
+        dispatch(ComposeCameraAction.SetAnalysisResultConfidenceRange(analysisResultConfidenceRange))
     }
 
 }
