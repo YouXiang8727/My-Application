@@ -85,11 +85,10 @@ class MediaProjectionUtils private constructor(
             null
         )
 
-    @MainThread
     fun getScreenshot(
         saveImage: Boolean = false
     ): Bitmap? {
-        return runBlocking {
+        return runBlocking(Dispatchers.Main.immediate) {
             val image = imageReader.acquireLatestImage() ?: return@runBlocking null
             val width = image.width
             val height = image.height
