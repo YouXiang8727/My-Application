@@ -9,6 +9,8 @@ xlog = "1.11.0"
 xxpermissions = "18.63"
 kotlinBom = "1.8.0"
 composeBom = "2022.10.00"
+androidGradlePlugin = "8.4.0"
+kotlinAndroid = "1.7.20"
 
 [libraries]
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
@@ -30,4 +32,6 @@ xlog = { group = "com.elvishew", name = "xlog", version.ref = "xlog" }
 xxpermissions = { group = "com.github.getActivity", name = "XXPermissions", version.ref = "xxpermissions" }
 
 [plugins]
-
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinAndroid" }
