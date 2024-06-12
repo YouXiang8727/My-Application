@@ -51,7 +51,9 @@ fun ComposeCamera(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        ComposeCameraView(viewModel)
+        Box(modifier = Modifier.fillMaxSize()) {
+            ComposeCameraView(viewModel)
+        }
         AnalysisResultDrawableTypeSelector(viewModel)
     }
 }
