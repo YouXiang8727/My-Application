@@ -51,9 +51,7 @@ fun ComposeCamera(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            ComposeCameraView(viewModel)
-        }
+        ComposeCameraView(viewModel)
         AnalysisResultDrawableTypeSelector(viewModel)
     }
 }
@@ -117,6 +115,7 @@ private fun ComposeCameraView(
         }
 
     AndroidView(
+        modifier = Modifier.fillMaxSize(),
         factory = { ctx ->
             cameraProviderFuture.addListener({
                 cameraProvider.unbindAll()
