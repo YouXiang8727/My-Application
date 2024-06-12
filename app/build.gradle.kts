@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -68,4 +70,6 @@ dependencies {
 
     implementation (libs.xlog)
     implementation (libs.xxpermissions)
+    implementation (libs.hilt.android)
+    ksp (libs.hilt.compiler)
 }
