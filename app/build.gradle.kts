@@ -72,4 +72,5 @@ dependencies {
     implementation (libs.xxpermissions)
     implementation (libs.hilt.android)
     ksp (libs.hilt.compiler)
+    implementation(libs.retrofit2)
 }
