@@ -17,6 +17,7 @@ ksp = "1.9.24-1.0.20"
 retrofit2 = "2.11.0"
 moshi = "1.15.1"
 moshiConverter = "2.9.0"
+pullRefresh = "1.1.1"
 
 [libraries]
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
@@ -42,6 +43,7 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2"}
 moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi"}
 moshi-converter = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "moshiConverter" }
+pullrefresh = { module = "eu.bambooapps:compose-material3-pullrefresh", version.ref = "pullRefresh" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

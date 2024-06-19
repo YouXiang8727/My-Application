@@ -76,4 +76,5 @@ dependencies {
     implementation(libs.retrofit2)
     implementation(libs.moshi)
     implementation(libs.moshi.converter)
+    implementation(libs.pullrefresh)
 }
