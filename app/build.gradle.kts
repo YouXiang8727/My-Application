@@ -72,6 +72,8 @@ dependencies {
     implementation (libs.xxpermissions)
     implementation (libs.hilt.android)
     ksp (libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.retrofit2)
     implementation(libs.moshi)
+    implementation(libs.moshi.converter)
 }
