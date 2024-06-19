@@ -11,7 +11,7 @@ data class GetYouBikeDataUseCase @Inject constructor(
     private val youBikeApiRepository: YouBikeApiRepository
 ) {
     operator fun invoke(): Flow<ApiResult<List<YouBikeData>>> = flow {
-        emit(ApiResult.Loading)
+        emit(ApiResult.Loading())
         emit(youBikeApiRepository.getYouBikeData())
     }
 }

@@ -6,7 +6,9 @@ enum class ApiStatus{
     LOADING
 }
 
-sealed class ApiResult <out T> (val status: ApiStatus, val data: T?, val message:String?) {
+sealed class ApiResult <out T> (
+    val status: ApiStatus, val data: T?, val message:String?
+) {
 
     data class Success<out R>(val _data: R?): ApiResult<R>(
         status = ApiStatus.SUCCESS,
@@ -20,9 +22,12 @@ sealed class ApiResult <out T> (val status: ApiStatus, val data: T?, val message
         message = exception
     )
 
-    data object Loading: ApiResult<Nothing>(
+    data class Loading<out R>(
+        val _data: R? = null,
+        val _message: String? = null
+    ): ApiResult<R>(
         status = ApiStatus.LOADING,
-        data = null,
-        message = null
+        data = _data,
+        message = _message
     )
 }

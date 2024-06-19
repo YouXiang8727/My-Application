@@ -6,7 +6,6 @@ import com.youxiang8727.myapplication.data.network.dto.toYouBikeDataList
 import com.youxiang8727.myapplication.domain.common.ApiResult
 import com.youxiang8727.myapplication.domain.model.YouBikeData
 import com.youxiang8727.myapplication.domain.repository.YouBikeApiRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class YouBikeApiRepositoryImpl @Inject constructor(
