@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">My Application</string>
+
+    <string name="total_bikes">Total: %d</string>
+    <string name="available_rent_bikes">Rent Available: %d</string>
+    <string name="available_return_bikes">Return Available: %d</string>
+
 </resources>

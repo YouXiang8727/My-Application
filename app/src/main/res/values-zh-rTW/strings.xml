@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">My Application</string>
+
+    <string name="total_bikes">總共: %d 輛</string>
+    <string name="available_rent_bikes">可租借: %d 輛</string>
+    <string name="available_return_bikes">可歸還: %d 輛</string>
+
+</resources>
